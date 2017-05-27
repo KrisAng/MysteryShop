@@ -1,0 +1,7 @@
+name: MysteryShop
+main: com.mrsun.MysteryShop.shopMain
+version: 1.0
+commands:
+  mshop:
+    description: mshop
+    usage: /mshop
