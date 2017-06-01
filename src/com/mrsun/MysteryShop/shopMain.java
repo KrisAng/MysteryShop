@@ -26,8 +26,11 @@ public class shopMain extends JavaPlugin{
 	public void onEnable(){
 		Bukkit.getPluginManager().registerEvents(new MSItemManager(), this);
 		getCommand("mshop").setExecutor(new MSItemManager());
-		readFile();
-		getLogger().info(Color.RED+"Enabled!");
+		if(ListFile.exists()){
+			readFile();
+		}
+		
+		getLogger().info("Enabled!");
 	}
 	public void saveFile(){
 		try {

@@ -24,7 +24,7 @@ public class MSSingleItem implements Serializable{
 	private short Durability;
 	boolean isEnchanted;
 	public MSSingleItem(ItemStack item){
-		Item = item.clone();
+		Item = item;
 		
 	}
 	

@@ -21,7 +21,10 @@ public class MSItem implements Serializable{
 	private Random r = new Random();
 	
 	public void RandomIt(){
-		ItemNow = ItemList.get(r.nextInt(ItemList.size() - 1));
+		if(!ItemList.isEmpty()){
+			ItemNow = ItemList.get(r.nextInt(ItemList.size())-1);
+		}
+		
 	}
 	
 	public MSItem(ItemStack[] itemlist,double price,int delay,int id){
@@ -40,6 +43,9 @@ public class MSItem implements Serializable{
 			@Override
 			public void run() {
 				RandomIt();
+				if(rTime == 0){
+					rTime = Delay;
+				}
 				rTime--;
 				
 			}
