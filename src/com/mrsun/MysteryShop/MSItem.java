@@ -11,7 +11,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 
 //在MSItem类构造时启动异步计时器
-public class MSItem implements Serializable{
+public class MSItem implements Serializable,Cloneable{
 	private ArrayList<MSSingleItem> ItemList = new ArrayList<MSSingleItem>(); //参与随机的物品
 	private MSSingleItem ItemNow; //当前物品
 	private double Price; //所有物品价格
@@ -21,9 +21,18 @@ public class MSItem implements Serializable{
 	private Random r = new Random();
 	
 	public void RandomIt(){
-		if(!ItemList.isEmpty()){
-			ItemNow = ItemList.get(r.nextInt(ItemList.size())-1);
+		if(ItemList.size() == 0) return;
+		if(ItemList.size() == 1){
+			ItemNow = ItemList.get(0);
+			return;
 		}
+		
+		MSSingleItem temp = ItemList.get(r.nextInt(ItemList.size()-1));
+		try {
+			ItemNow = (MSSingleItem)temp.clone();
+		} catch (CloneNotSupportedException e) {e.printStackTrace();}
+		return;
+		
 		
 	}
 	
@@ -55,10 +64,13 @@ public class MSItem implements Serializable{
 		
 	}
 	//编辑随机物品s
-	public void editItems(ItemStack[] itemlist){
+	public void editItems(ArrayList<MSSingleItem> itemlist){
 		ItemList.clear();
-		for(int i =0;i<itemlist.length;i++){
-			ItemList.add(new MSSingleItem(itemlist[i]));
+		for(int i =0;i<itemlist.size();i++){
+			try {
+				ItemList.add((MSSingleItem)itemlist.get(i).clone());
+			} catch (CloneNotSupportedException e) {e.printStackTrace();}
+			//ItemList.add(new MS0SingleItem(itemlist[i]));
 		}
 		
 		
@@ -87,6 +99,9 @@ public class MSItem implements Serializable{
 	public ItemStack getNowItem(){
 		return ItemNow.getItem();
 	}
+	public Object clone() throws CloneNotSupportedException { 
+        return super.clone(); 
+    } 
 	
 
 }

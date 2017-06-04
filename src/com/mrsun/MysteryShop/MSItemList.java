@@ -17,15 +17,12 @@ public class MSItemList implements Serializable{
 	}
 	
 	
-	//获取指定ID的物品
+	//获取指定ID的项
 	public MSItem getItem(int id){
-		ArrayList<Integer> ids = new ArrayList<Integer>();
 		for(int i =0;i<Items.size();i++){
-			ids.add(Items.get(i).getId());
-		}
-		for(int i =0;i<ids.size();i++){
-			if(ids.get(i) == id){
-				return Items.get(i);
+			if(Items.get(i).getId()== id){
+				
+					return (MSItem) Items.get(i);
 			}
 			
 		}

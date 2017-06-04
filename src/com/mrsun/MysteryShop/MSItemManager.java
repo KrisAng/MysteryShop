@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,20 +15,22 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_7_R1.Material;
 
 //实现GUI编辑
 public class MSItemManager implements Listener, CommandExecutor{
 	Inventory Inv;
-	StringBuilder InvName = new StringBuilder();
+	String InvName;
 	Player P;
 	MSItem List;
     public void editItem(Player p,MSItem list){
     	P = p;
-    	List = list;
-		InvName.append(Color.YELLOW).append(list.getId());
+		List = list;
+		InvName = list.getId() + "";
 		Inv = Bukkit.createInventory(null, 54,InvName.toString());
 		for(int i =0;i<list.getItems().size();i++){
+			if(List.getItems().get(i).getItem().getData().getItemType().equals(Material.AIR)){
+				continue;
+			}
 			Inv.addItem(list.getItems().get(i).getItem());
 		}
 		p.openInventory(Inv);
@@ -36,7 +39,16 @@ public class MSItemManager implements Listener, CommandExecutor{
     public void onInvClose(InventoryCloseEvent e){
     	if(((Player)e.getPlayer()).equals(P)){
     		if(e.getInventory().getName().equals(InvName.toString())){
-    			List.editItems(e.getInventory().getContents());
+    			Player p = (Player)e.getPlayer();
+    			p.sendMessage("Y");
+    			for(int i = 0;i<54;i++){
+    				if(e.getInventory().getItem(i+1).getData().getItemType() == Material.AIR){
+    					continue;
+    				}
+    				ArrayList<MSSingleItem> l = new ArrayList<MSSingleItem>();
+    				l.add(new MSSingleItem(e.getInventory().getItem(i+1)));
+    				List.editItems(l);
+    			}
     		}
     	}
     }
@@ -90,6 +102,10 @@ public class MSItemManager implements Listener, CommandExecutor{
     				Player p = (Player)sender;
     				p.sendMessage(args);
     				if(args.length == 4){
+    					if(shopMain.Items.getItem(Integer.parseInt(args[1])) == null){
+    						p.sendMessage(new StringBuilder().append("§c").append("编辑失败：随机项不存在").toString());
+    						return true;
+    					}
     					shopMain.Items.getItem(Integer.parseInt(args[1])).setPrice(Double.parseDouble(args[2]));
     					shopMain.Items.getItem(Integer.parseInt(args[1])).setDelay(Integer.parseInt(args[3]));
     					editItem((Player)sender,shopMain.Items.getItem(Integer.parseInt(args[1])));
@@ -118,6 +134,12 @@ public class MSItemManager implements Listener, CommandExecutor{
     				Player p = (Player)sender;
     				p.sendMessage(shopMain.Items.toString());
     			}
+    		}
+    		if(args[0].equalsIgnoreCase("get")){
+    			Player p = (Player)sender;
+    			int id = Integer.parseInt(args[1]);
+    			ItemStack i = shopMain.Items.getItem(id).getNowItem();
+    			p.sendMessage(i.toString());
     		}
     		
     	}

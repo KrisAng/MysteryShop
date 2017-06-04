@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -19,9 +21,15 @@ public class shopMain extends JavaPlugin{
 	ObjectInputStream FileIn;
 	ObjectOutputStream FileOut;
 	File ListFile = new File(getDataFolder().getAbsolutePath()+"Data.dat");
-	
+	public static HashMap<String,String> Language = new HashMap<String,String>(); 
 	public static MSItemList Items = new MSItemList();
 	
+	public void loadLanguage(){
+		Map<String,Object> m  = getConfig().getValues(false);
+		for(int i = 0;i<m.size();i++){
+			Language.put(m.keySet().iterator().next(), m.get(i).toString());
+		}
+	}
 	@Override
 	public void onEnable(){
 		Bukkit.getPluginManager().registerEvents(new MSItemManager(), this);
@@ -29,6 +37,7 @@ public class shopMain extends JavaPlugin{
 		if(ListFile.exists()){
 			readFile();
 		}
+		loadLanguage();
 		
 		getLogger().info("Enabled!");
 	}

@@ -10,7 +10,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class MSSingleItem implements Serializable{
+public class MSSingleItem implements Serializable,Cloneable{
 	/**
 	 * 
 	 */
@@ -24,7 +24,7 @@ public class MSSingleItem implements Serializable{
 	private short Durability;
 	boolean isEnchanted;
 	public MSSingleItem(ItemStack item){
-		Item = item;
+		Item = item.clone();
 		
 	}
 	
@@ -76,7 +76,7 @@ public class MSSingleItem implements Serializable{
 				im.addEnchant(Enchantment.getById(Enchant.keySet().iterator().next()), Enchant.values().iterator().next(),true);
 			}
 		}
-		
+		Item.setAmount(1);
 		Item.setItemMeta(im);
 		
 	}
@@ -85,6 +85,11 @@ public class MSSingleItem implements Serializable{
 	public ItemStack getItem(){
 		return Item;
 	}
+	
+	@Override 
+    public Object clone() throws CloneNotSupportedException { 
+        return super.clone(); 
+    } 
 	
 	
 
