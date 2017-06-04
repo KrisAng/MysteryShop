@@ -19,19 +19,23 @@ public class MSItem implements Serializable,Cloneable{
 	private int rTime; //距离下一次随机剩余时间
 	private int Id; //随机项目ID
 	private Random r = new Random();
+	BukkitTask randomTask;
 	
 	public void RandomIt(){
+		Bukkit.broadcastMessage(ItemList.size()+"");
 		if(ItemList.size() == 0) return;
 		if(ItemList.size() == 1){
 			ItemNow = ItemList.get(0);
 			return;
 		}
 		
-		MSSingleItem temp = ItemList.get(r.nextInt(ItemList.size()-1));
+		MSSingleItem temp = ItemList.get(r.nextInt(ItemList.size()));
+		Bukkit.broadcastMessage(temp.toString());
 		try {
 			ItemNow = (MSSingleItem)temp.clone();
 		} catch (CloneNotSupportedException e) {e.printStackTrace();}
 		return;
+		
 		
 		
 	}
@@ -48,7 +52,7 @@ public class MSItem implements Serializable,Cloneable{
 		rTime = delay;
 		Id = id;
 		
-		BukkitTask randomTask = new BukkitRunnable() { //随机进程
+		randomTask = new BukkitRunnable() { //随机进程
 			@Override
 			public void run() {
 				RandomIt();
@@ -65,6 +69,7 @@ public class MSItem implements Serializable,Cloneable{
 	}
 	//编辑随机物品s
 	public void editItems(ArrayList<MSSingleItem> itemlist){
+		if(itemlist.isEmpty())return;
 		ItemList.clear();
 		for(int i =0;i<itemlist.size();i++){
 			try {
@@ -74,6 +79,19 @@ public class MSItem implements Serializable,Cloneable{
 		}
 		
 		
+	}
+	public void readStacks(){
+		for(int i =0;i<ItemList.size();i++){
+			ItemList.get(i).deseri();
+		}
+		Bukkit.getScheduler().runTaskTimerAsynchronously(Bukkit.getPluginManager().getPlugin("MysteryShop"),(Runnable)randomTask, getDelay()*20, getDelay()*20);
+		Bukkit.broadcastMessage("T");
+
+	}
+	public void saveStacks(){
+		for(int i =0;i<ItemList.size();i++){
+			ItemList.get(i).seri();
+		}
 	}
 	public void setPrice(double price){
 		Price = price;

@@ -19,16 +19,20 @@ import org.bukkit.inventory.ItemStack;
 //实现GUI编辑
 public class MSItemManager implements Listener, CommandExecutor{
 	Inventory Inv;
-	String InvName;
-	Player P;
-	MSItem List;
+	public static String InvName;
+	public static String Pname = new String();
+	public static MSItem List;
     public void editItem(Player p,MSItem list){
-    	P = p;
+    	Pname = p.getName();
+    	
 		List = list;
 		InvName = list.getId() + "";
+		
 		Inv = Bukkit.createInventory(null, 54,InvName.toString());
-		for(int i =0;i<list.getItems().size();i++){
-			if(List.getItems().get(i).getItem().getData().getItemType().equals(Material.AIR)){
+		Material m;
+		for(int i =0;i<List.getItems().size();i++){
+			m = List.getItems().get(i).getItem().getType();
+			if(m == Material.AIR ){
 				continue;
 			}
 			Inv.addItem(list.getItems().get(i).getItem());
@@ -37,18 +41,29 @@ public class MSItemManager implements Listener, CommandExecutor{
 	}
     @EventHandler
     public void onInvClose(InventoryCloseEvent e){
-    	if(((Player)e.getPlayer()).equals(P)){
+    	Player p = (Player)e.getPlayer();
+    	//p.sendMessage(Pname);
+    	//p.sendMessage(InvName);
+    	//Bukkit.broadcastMessage(p.getName());
+    	//if(p.getName().equals(Pname)) p.sendMessage("T");else p.sendMessage("F");
+    	//if(e.getInventory().getName().equals(InvName)) p.sendMessage("T");else p.sendMessage("F");
+    	if(p.getName().equals(Pname)){
+    		//p.sendMessage("Y");
     		if(e.getInventory().getName().equals(InvName.toString())){
-    			Player p = (Player)e.getPlayer();
-    			p.sendMessage("Y");
-    			for(int i = 0;i<54;i++){
-    				if(e.getInventory().getItem(i+1).getData().getItemType() == Material.AIR){
-    					continue;
+    			
+    			//p.sendMessage("Y");
+    			ArrayList<MSSingleItem> l = new ArrayList<MSSingleItem>();
+    			ItemStack item;
+    			for(int i = 0;i<53;i++){
+    				item =  e.getInventory().getItem(i);
+    				
+    				if(!(e.getInventory().getItem(i) == null)){
+    					p.sendMessage(item.toString());
+    					l.add(new MSSingleItem(e.getInventory().getItem(i)));
     				}
-    				ArrayList<MSSingleItem> l = new ArrayList<MSSingleItem>();
-    				l.add(new MSSingleItem(e.getInventory().getItem(i+1)));
-    				List.editItems(l);
     			}
+    			p.sendMessage(l.size()+"");
+    			List.editItems(l);
     		}
     	}
     }
@@ -100,7 +115,7 @@ public class MSItemManager implements Listener, CommandExecutor{
     			if(args[0].equalsIgnoreCase("edit")){
     				//mshop edit [id] %price% %delay%
     				Player p = (Player)sender;
-    				p.sendMessage(args);
+    				//p.sendMessage(args);
     				if(args.length == 4){
     					if(shopMain.Items.getItem(Integer.parseInt(args[1])) == null){
     						p.sendMessage(new StringBuilder().append("§c").append("编辑失败：随机项不存在").toString());
@@ -139,6 +154,7 @@ public class MSItemManager implements Listener, CommandExecutor{
     			Player p = (Player)sender;
     			int id = Integer.parseInt(args[1]);
     			ItemStack i = shopMain.Items.getItem(id).getNowItem();
+    			if(i == null) p.sendMessage("F");
     			p.sendMessage(i.toString());
     		}
     		

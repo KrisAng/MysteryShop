@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -38,6 +39,18 @@ public class MSItemList implements Serializable{
 	//ÒÆ³ýËæ»úÏî
 	public void removeItem(MSItem item){
 		Items.remove(item);
+	}
+	public void readItems(){
+		for(int i = 0;i<Items.size();i++){
+			Items.get(i).readStacks();
+		}
+		
+		
+	}
+	public void saveItems(){
+		for(int i = 0;i<Items.size();i++){
+			Items.get(i).saveStacks();
+		}
 	}
 	
 	

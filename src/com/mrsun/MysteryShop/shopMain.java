@@ -30,21 +30,26 @@ public class shopMain extends JavaPlugin{
 			Language.put(m.keySet().iterator().next(), m.get(i).toString());
 		}
 	}
+	
 	@Override
 	public void onEnable(){
 		Bukkit.getPluginManager().registerEvents(new MSItemManager(), this);
 		getCommand("mshop").setExecutor(new MSItemManager());
 		if(ListFile.exists()){
 			readFile();
+			Items.readItems();
 		}
-		loadLanguage();
+		
+		//loadLanguage();
 		
 		getLogger().info("Enabled!");
 	}
+	
 	public void saveFile(){
 		try {
 			FileOut = new ObjectOutputStream(new FileOutputStream(ListFile));
 			FileOut.writeObject(Items);
+		
 		} catch (IOException e) {}
 	}
 	public void readFile(){
@@ -55,7 +60,9 @@ public class shopMain extends JavaPlugin{
 	}
 	@Override
 	public void onDisable(){
+		Items.saveItems();
 		saveFile();
+		
 	}
 	public Plugin getThis(){
 		return this;
